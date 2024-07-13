@@ -1,12 +1,31 @@
+//dependencies
+const express=require('express')
+const cors=require('cors')
+const morgan=require('morgan')
+const mongoose=require('mongoose')
+const app=express()
+const dotenv=require('dotenv')
+dotenv.config()
+const url=process.env.DB_URL
+const houseRouter=require('./src/routes/houseRouter')
+const userRouter=require('./src/routes/userRouter')
+const connectDB=require('./config/db')
+const bodyParser=require('body-parser')
+//middlewares
+app.use(cors())
+app.use(express.json())
+app.use(morgan('dev'))
 
-const express = require('express')
-const app = express()
-const port = 3000
+//routes
+app.use('/api/house',houseRouter)
+app.use('/api/user',userRouter)
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+
+app.use(bodyParser.json())
+mongoose.connect(url).then(()=>{
+  console.log('database is running')
+  app.listen(3000,()=>{
+    console.log('server is up and running')
+  })
 })
 
-app.listen(port, () => {
-  console.log(`This is backend for melody ${port}`)
-})
