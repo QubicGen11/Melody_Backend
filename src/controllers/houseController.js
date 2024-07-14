@@ -4,48 +4,48 @@ const User = require('../models/userModel');
 
 const createHouse = async (req, res) => {
     const {
-        email,
+      email,
+      title, description, houseType, address, amenities,
+      rentalType, price, availableFrom, leaseType, adType,
+      ownerName, ownerPhone, ownerEmail, owner, postedBy, location, image
+    } = req.body;
+  
+    try {
+      const isUser = await User.findOne({ email: email });
+      if (!isUser) {
+        return res.status(400).send('User data not found');
+      }
+      const newHouse = new House({
         title, description, houseType, address, amenities,
         rentalType, price, availableFrom, leaseType, adType,
-        ownerName, ownerPhone, ownerEmail,owner, postedBy, location
-    } = req.body;
-
-    try {
-        const isUser = await User.findOne({ email: email });
-        if (!isUser) {
-            return res.status(400).send('User data not found');
-        }
-        const newHouse = new House({
-            title, description, houseType, address, amenities,
-            rentalType, price, availableFrom, leaseType, adType,
-            ownerName: isUser.name, ownerPhone: isUser.phone,ownerEmail:email,
-            owner: isUser._id, postedBy: isUser._id, location
-        });
-        await newHouse.save();
-        return res.status(200).send(newHouse);
+        ownerNamee, ownerPhone: isUser.phone, ownerEmail: email,
+        owner: isUser._id, postedBy: isUser._id, location, image
+      });
+      await newHouse.save();
+      return res.status(200).send(newHouse);
     } catch (error) {
-        return res.status(500).send('Internal error: ' + error.message);
+      return res.status(500).send('Internal error: ' + error.message);
     }
-};
-
-const getAllHouses = async (req, res) => {
+  };
+  
+  const getAllHouses = async (req, res) => {
     try {
-        const allHouses = await House.find({});
-        if (allHouses.length > 0) {
-            return res.status(200).send(allHouses);
-        }
-        return res.status(400).send('No house found');
+      const allHouses = await House.find({});
+      if (allHouses.length > 0) {
+        return res.status(200).send(allHouses);
+      }
+      return res.status(400).send('No house found');
     } catch (error) {
-        return res.status(500).send('Internal error: ' + error.message);
+      return res.status(500).send('Internal error: ' + error.message);
     }
-};
-
+  };
+  
 const updateHouse = async (req, res) => {
     const { id } = req.params;
     const {
         title, description, houseType, address, amenities,
         rentalType, price, availableFrom, leaseType, adType,
-        ownerName, ownerPhone, owner, postedBy
+        ownerName, ownerPhone, owner, postedBy, image
     } = req.body;
 
     try {
@@ -53,7 +53,8 @@ const updateHouse = async (req, res) => {
             {
                 title, description, houseType, address, amenities,
                 rentalType, price, availableFrom, leaseType, adType,
-                ownerName, ownerPhone, owner, postedBy
+                ownerName, ownerPhone, owner, postedBy,
+                image: Buffer.from(image, 'base64'), // Converting base64 to Buffer
             },
             { new: true });
         if (!updatedHouse) {
