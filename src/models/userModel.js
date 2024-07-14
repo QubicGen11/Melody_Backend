@@ -18,6 +18,20 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    socials:{
+        instagram:{
+            type:String
+        },
+        twitter:{
+            type:String
+        },
+        whatsapp:{
+            type:String
+        },
+        linkedin:{
+            type:String
+        }
+    },
     password: {
         type: String,
         required: true
@@ -25,6 +39,17 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: true
+    },
+    location: {
+        type: {
+            type: String,
+            enum: ['Point'],
+          
+        },
+        coordinates: {
+            type: [Number],
+         
+        }
     },
     houses: [{
         type: mongoose.Schema.Types.ObjectId,

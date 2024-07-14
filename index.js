@@ -9,7 +9,7 @@ dotenv.config()
 const url=process.env.DB_URL
 const houseRouter=require('./src/routes/houseRouter')
 const userRouter=require('./src/routes/userRouter')
-const connectDB=require('./config/db')
+ 
 const bodyParser=require('body-parser')
 //middlewares
 app.use(cors())
