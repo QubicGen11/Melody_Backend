@@ -24,7 +24,7 @@ app.use('/api/user',userRouter)
 app.use(bodyParser.json())
 mongoose.connect(url).then(()=>{
   console.log('database is running')
-  app.listen(3000,()=>{
+  app.listen(4000,()=>{
     console.log('server is up and running')
   })
 })
