@@ -68,17 +68,93 @@ const getUserByCreds = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-const getAllHousesByUser=async(req,res)=>{
-    const {email}=req.params
+const getAllHousesByUser = async (req, res) => {
+    const { email } = req.params;
     try {
-        const isUser=await User.findOne({email:email})
-        if(!isUser){
-            return res.status(400).send('userdata not found')
+        // Find the user by their email
+        const user = await User.findOne({ email: email });
+        if (!user) {
+            return res.status(400).send('User data not found');
         }
-        const getAllHouses=await House.findOne({ownerName:isUser.name})
-        return res.status(200).send(getAllHouses)
+        
+        // Find all houses owned by the user
+        const houses = await House.find({ owner: user._id });
+        if (!houses || houses.length === 0) {
+            return res.status(404).send('Houses not found for the user');
+        }
+
+        // Return the houses found
+        return res.status(200).send(houses);
     } catch (error) {
-        return res.status(500).send('internal error'+error.message)
+        return res.status(500).send('Internal error: ' + error.message);
     }
-}
-module.exports = { registerUser, loginUser,getUserByCreds,getAllHousesByUser };
+};
+const addBookmark = async (req, res) => {
+    const { email, houseId } = req.params;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        const house = await House.findById(houseId);
+        if (!house) {
+            return res.status(404).send('House not found');
+        }
+
+        // Check if the house is already bookmarked
+        if (user.bookmarks.includes(houseId)) {
+            return res.status(400).send('House already bookmarked');
+        }
+
+        user.bookmarks.push(houseId);
+        await user.save();
+
+        return res.status(200).send('Bookmark added successfully');
+    } catch (error) {
+        return res.status(500).send('Internal error: ' + error.message);
+    }
+};
+
+
+// Remove Bookmark
+const removeBookmark = async (req, res) => {
+    const { email, houseId } = req.params;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        const houseIndex = user.bookmarks.indexOf(houseId);
+        if (houseIndex === -1) {
+            return res.status(400).send('House not bookmarked');
+        }
+
+        user.bookmarks.splice(houseIndex, 1);
+        await user.save();
+
+        return res.status(200).send('Bookmark removed successfully');
+    } catch (error) {
+        return res.status(500).send('Internal error: ' + error.message);
+    }
+};
+
+const getAllBookmarks = async (req, res) => {
+    const { email } = req.params;
+
+    try {
+        const user = await User.findOne({ email }).populate('bookmarks');
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        return res.status(200).send(user.bookmarks);
+    } catch (error) {
+        return res.status(500).send('Internal error: ' + error.message);
+    }
+};
+
+module.exports = { registerUser, loginUser,getUserByCreds,getAllHousesByUser,addBookmark,removeBookmark,getAllBookmarks };

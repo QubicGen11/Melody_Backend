@@ -9,7 +9,7 @@ dotenv.config()
 const url=process.env.DB_URL
 const houseRouter=require('./src/routes/houseRouter')
 const userRouter=require('./src/routes/userRouter')
- 
+ const port=process.env.PORT ||4000
 const bodyParser=require('body-parser')
 //middlewares
 app.use(cors())
@@ -24,7 +24,7 @@ app.use('/api/user',userRouter)
 app.use(bodyParser.json())
 mongoose.connect(url).then(()=>{
   console.log('database is running')
-  app.listen(3000,()=>{
+  app.listen(port,()=>{
     console.log('server is up and running')
   })
 })

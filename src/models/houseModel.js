@@ -32,7 +32,7 @@ const houseSchema = new mongoose.Schema({
         },
         coordinates: {
             type: [Number],
-            required: true
+           
         }
     },
     amenities: [String],
@@ -63,6 +63,10 @@ const houseSchema = new mongoose.Schema({
     ownerPhone: {
         type: String,
         required: true
+    },
+    ownerEmail:{
+        type:String,
+        required:true
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,

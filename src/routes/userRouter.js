@@ -1,10 +1,11 @@
 const express = require('express');
-const { loginUser, registerUser,getUserByCreds,getAllHousesByUser } = require('../controllers/userController');
+const { loginUser, registerUser,getUserByCreds,getAllHousesByUser,addBookmark,removeBookmark,getAllBookmarks } = require('../controllers/userController');
 const router = express.Router();
-
 router.post('/login', loginUser);
 router.post('/register', registerUser);
 router.get('/:email', getUserByCreds);
+router.post(':email/bookmarks/:houseId', addBookmark);
+router.get(':email/bookmarks', getAllBookmarks);
+router.delete(':email/bookmarks/:houseId', removeBookmark);
 router.get('/houses/:email', getAllHousesByUser);
-
 module.exports = router;
