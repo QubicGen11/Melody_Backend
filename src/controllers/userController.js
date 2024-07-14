@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const argon2 = require('argon2');
 const { generateToken } = require('../config/jwtConfig'); // Ensure correct path
+const House = require('../models/houseModel');
 
 const registerUser = async (req, res) => {
     const { name, role, companyName, email, password, phone } = req.body;
@@ -67,4 +68,17 @@ const getUserByCreds = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-module.exports = { registerUser, loginUser,getUserByCreds };
+const getAllHousesByUser=async(req,res)=>{
+    const {email}=req.params
+    try {
+        const isUser=await User.findOne({email:email})
+        if(!isUser){
+            return res.status(400).send('userdata not found')
+        }
+        const getAllHouses=await House.findOne({ownerName:isUser.name})
+        return res.status(200).send(getAllHouses)
+    } catch (error) {
+        return res.status(500).send('internal error'+error.message)
+    }
+}
+module.exports = { registerUser, loginUser,getUserByCreds,getAllHousesByUser };

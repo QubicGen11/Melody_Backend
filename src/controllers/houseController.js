@@ -78,6 +78,27 @@ const getHouseById = async (req, res) => {
         return res.status(500).send('Internal error: ' + error.message);
     }
 };
+const getHouseByUser = async (req, res) => {
+    const { email } = req.params;
+    try {
+      const isUser = await User.findOne({ email: email });
+      if (!isUser) {
+        return res.status(400).send('User data not found');
+      }
+      
+      // Convert isUser._id to ObjectId
+      const userId = mongoose.Types.ObjectId(isUser._id);
+  
+      const getHouseByUser = await House.findOne({ owner: userId });
+      if (!getHouseByUser) {
+        return res.status(404).send('House not found for the user');
+      }
+      
+      return res.status(200).send(getHouseByUser);
+    } catch (error) {
+      return res.status(500).send('Internal error: ' + error.message);
+    }
+  };
 const getHousesNearLocation = async (req, res) => {
     const { userEmail } = req.params;
   
@@ -112,6 +133,6 @@ const getHousesNearLocation = async (req, res) => {
     }
   };
 
-module.exports = { createHouse, getAllHouses, updateHouse, getHouseById, getHousesNearLocation };
+module.exports = { createHouse, getAllHouses, updateHouse, getHouseById, getHousesNearLocation,getHouseByUser };
 
  
