@@ -5,7 +5,7 @@ const {
     updateHouse,
     getHouseById,
     getHousesNearLocation,
-    getHouseByUser
+    getHouseByUser,addBookmark,removeBookmark,getAllBookmarks
 } = require('../controllers/houseController');
 
 const router = express.Router();
@@ -16,5 +16,7 @@ router.get('/houses/near/:userEmail', getHousesNearLocation); // Include userEma
 router.get('/houses/id/:id', getHouseById); // Change to avoid conflict
 router.get('/houses/user/:email', getHouseByUser); // Change to avoid conflict
 router.put('/houses/:id', updateHouse);
-
+router.post('/user/bookmark', addBookmark);
+router.post('/user/unbookmark', removeBookmark);
+router.get('/user/bookmarks/:email', getAllBookmarks);
 module.exports = router;
