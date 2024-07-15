@@ -18,7 +18,7 @@ const createHouse = async (req, res) => {
       const newHouse = new House({
         title, description, houseType, address, amenities,
         rentalType, price, availableFrom, leaseType, adType,
-        ownerNamee, ownerPhone: isUser.phone, ownerEmail: email,
+        ownerName, ownerPhone: isUser.phone, ownerEmail: email,
         owner: isUser._id, postedBy: isUser._id, location, image
       });
       await newHouse.save();
@@ -84,16 +84,16 @@ const getHouseByUser = async (req, res) => {
     try {
         const isUser = await User.findOne({ email: email });
         if (!isUser) {
-            return res.status(400).send('User data not found');
+            return res.status(400).json({ error: 'User data not found' });
         }
-        const userId = mongoose.Types.ObjectId(isUser._id);
-        const housesByUser = await House.find({ owner: userId });
+         
+        const housesByUser = await House.find({ ownerEmail: email });
         if (!housesByUser.length) {
-            return res.status(404).send('Houses not found for the user');
+            return res.status(404).json({ error: 'Houses not found for the user' });
         }
-        return res.status(200).send(housesByUser);
+        return res.status(200).json(housesByUser);
     } catch (error) {
-        return res.status(500).send('Internal error: ' + error.message);
+        return res.status(500).json({ error: 'Internal error: ' + error.message });
     }
 };
 
